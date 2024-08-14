@@ -26,16 +26,6 @@ if [ ! -d $localDirectoryToBeMounted ]; then
 fi
 localMountAbsolutePath=$(readlink -f $localDirectoryToBeMounted)
 
-mountOptions="destination=/var/www/volume"
-# Do not specify the source volume name if you want the volume to be auto-deleted after a container is shut down.
-# mountOptions="$mountOptions,source=volume-dir"
-mountOptions="$mountOptions,volume-driver=local"
-mountOptions="$mountOptions,volume-opt=device=$localMountAbsolutePath"
-mountOptions="$mountOptions,volume-opt=type=none"
-mountOptions="$mountOptions,volume-opt=o=bind"
-
-docker run \
-    -it --rm \
-    --name php"$phpVersion"-running \
-    --mount $mountOptions \
-    magic-push-php"$phpVersion"
+docker run -it --rm \
+    --volume $localMountAbsolutePath:/var/www/volume --workdir=/var/www/volume \
+    magic-push-php"$phpVersion" bash
